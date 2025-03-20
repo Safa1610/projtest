@@ -1,14 +1,14 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 
 import "bootstrap/dist/css/bootstrap.min.css";
 import "animate.css";
-import jobs from "../jobs";
 import FeaturedOffer from "../components/featuredOffer";
-import JobList from "../components/jobList";
 import { useNavigate } from "react-router-dom";
+import axios from "axios";
 
 const HomePage = () => {
   const [searchTerm, setSearchTerm] = useState("");
+  const [jobs, setJobs] = useState([]);
   const navigate = useNavigate();
 
   const handleSearch = () => {
@@ -16,6 +16,11 @@ const HomePage = () => {
       navigate(`/offres?search=${searchTerm}`);
     }
   };
+  useEffect(() => {
+    axios
+      .get("http://localhost:3000/api/jobs/available")
+      .then((res) => setJobs(res.data.jobs));
+  }, []);
   return (
     <>
       {/* <HeaderFirst /> */}

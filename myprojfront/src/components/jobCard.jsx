@@ -1,48 +1,84 @@
 import React from "react";
-import { Link, useNavigate, useParams } from "react-router-dom";
+import { Link } from "react-router-dom";
+import axios from "axios";
+import { jwtDecode } from "jwt-decode";
 
 const JobCard = ({ job }) => {
-  const { id } = useParams();
-  const token = sessionStorage.getItem("token");
-
+  const token = localStorage.getItem("token");
+  const role = localStorage.getItem("role");
+  const postuler = () => {
+    console.log(job._id);
+    axios
+      .post("http://localhost:3000/api/jobs/apply/" + job._id, {
+        userId: jwtDecode(token).id,
+      })
+      .then(() => {
+        alert("ok");
+      });
+  };
+  const updateStatut = () => {
+    axios.put("http://localhost:3000/api/jobs/" + job._id).then(() => {
+      alert("updated");
+      window.location.reload();
+    });
+  };
   return (
-    <div class="job_listing_area plus_padding">
-      <div class="job_lists m-0">
-        <div class="row">
-          <div class="col-lg-12 col-md-12">
-            <div class="single_jobs white-bg d-flex justify-content-between">
-              <div class="jobs_left d-flex align-items-center">
-                <div class="thumb">
+    <div className="job_listing_area plus_padding">
+      <div className="job_lists m-0">
+        <div className="row">
+          <div className="col-lg-12 col-md-12">
+            <div className="single_jobs white-bg d-flex justify-content-between">
+              <div className="jobs_left d-flex align-items-center">
+                <div className="thumb">
                   <img src="img/svg_icon/1.svg" alt="" />
                 </div>
-                <div class="jobs_conetent">
+                <div className="jobs_conetent">
                   <Link
-                    to={`/job/${job.id}`}
+                    to={`/job/${job._id}`}
                     style={{ textDecoration: "none" }}
                   >
                     <h4>{job.titre}</h4>
                   </Link>
 
-                  <div class="links_locat d-flex align-items-center">
-                    <div class="location">
+                  <div className="links_locat d-flex align-items-center">
+                    <div className="location">
                       <p>
-                        <i class="fa fa-map-marker"></i> {job.adresse}
+                        <i className="fa fa-map-marker"></i> {job.adresse}
                       </p>
                     </div>
-                    <div class="location">
+                    <div className="location">
                       <p>
-                        <i class="fa fa-clock-o"></i> {job.statut}
+                        <i className="fa fa-clock-o"></i> {job.statut}
                       </p>
                     </div>
                   </div>
                 </div>
               </div>
-              <div class="jobs_right">
-                <div class="apply_now">
-                  {token ? (
+              <div className="jobs_right">
+                <div className="apply_now">
+                  {role === "company" ? (
+                    <>
+                      <Link
+                        className="boxed-btn3"
+                        style={{ textDecoration: "none" }}
+                        onClick={updateStatut}
+                      >
+                        Change Status
+                      </Link>
+                      <br />
+                      <Link
+                        className="boxed-btn3"
+                        style={{ textDecoration: "none" }}
+                        to={`/candidates/${job._id}`}
+                      >
+                        See candidates
+                      </Link>
+                    </>
+                  ) : token ? (
                     <Link
                       className="boxed-btn3"
                       style={{ textDecoration: "none" }}
+                      onClick={postuler}
                     >
                       Postuler
                     </Link>
@@ -56,8 +92,11 @@ const JobCard = ({ job }) => {
                     </Link>
                   )}
                 </div>
-                <div class="date">
-                  <p>Date line: 31 Jan 2020</p>
+                <div className="date">
+                  <p>
+                    Post Date: {new Date(job.datepost).toLocaleDateString()}
+                  </p>
+                  {role != "company" && <p>Company: {job.societe.nom}</p>}
                 </div>
               </div>
             </div>

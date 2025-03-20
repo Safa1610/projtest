@@ -5,6 +5,7 @@ import Container from "react-bootstrap/Container";
 import Row from "react-bootstrap/Row";
 import Col from "react-bootstrap/Col";
 import { useNavigate } from "react-router-dom";
+import axios from "axios";
 
 function Register() {
   const [prenom, setPrenom] = useState("");
@@ -14,10 +15,50 @@ function Register() {
   const [tel, setTel] = useState("");
   const [motpasse, setMotpasse] = useState("");
   const [confirmpasse, setConfirmpasse] = useState("");
+  const [file, setFile] = useState("");
   const navigate = useNavigate();
-  const handleSubmit = (e) => {
-    e.preventDefault();
-    navigate("/");
+
+  const handleImage = (e) => {
+    const newImage = e.target.files[0];
+    if (newImage) {
+      setFile(newImage);
+    }
+  };
+
+  const handleSubmit = async (e) => {
+    try {
+      e.preventDefault();
+      const formData = new FormData();
+      formData.append("file", file);
+      formData.append("upload_preset", "safaProject");
+      formData.append("cloud_name", "dq0o9vgu0");
+
+      const res = await fetch(
+        "https://api.cloudinary.com/v1_1/dq0o9vgu0/image/upload",
+        {
+          method: "POST",
+          body: formData,
+        }
+      );
+      const data = await res.json();
+
+      axios
+        .post("http://localhost:3000/api/users/register", {
+          prenom,
+          nom,
+          email,
+          DateNaiss: date,
+          tel,
+          password: motpasse,
+          liencv: data.url,
+        })
+        .then((res) => {
+          navigate("/login");
+        })
+        .catch((err) => alert(err.message));
+    } catch (e) {
+      alert(e.message);
+    }
   };
   return (
     <>
@@ -101,7 +142,11 @@ function Register() {
                 </label>
               </Form.Floating>
               <Form.Group controlId="formFile" className="mb-3">
-                <Form.Control type="file" />
+                <Form.Control
+                  type="file"
+                  onChange={handleImage}
+                  accept=".pdf"
+                />
               </Form.Group>
 
               <Button variant="primary" type="submit" className="float-right">

@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import JobCard from "./jobCard";
-import jobs from "../jobs";
 import { useLocation } from "react-router-dom";
+import axios from "axios";
 
 export const JobList = () => {
   const location = useLocation();
@@ -10,7 +10,13 @@ export const JobList = () => {
 
   // État pour stocker le terme de recherche
   const [searchTerm, setSearchTerm] = useState(initialSearchTerm);
-
+  const [jobs, setJobs] = useState([]);
+  const [filtered, setFiltered] = useState([]);
+  useEffect(() => {
+    axios.get("http://localhost:3000/api/jobs/available").then((res) => {
+      setJobs(res.data.jobs);
+    });
+  }, []);
   useEffect(() => {
     setSearchTerm(initialSearchTerm);
   }, [initialSearchTerm]);

@@ -7,11 +7,11 @@ const jobSchema = new mongoose.Schema(
     description: { type: String },
     societe: {
       type: mongoose.Schema.Types.ObjectId,
-      ref: "societe",
+      ref: "Societe",
       required: true,
     },
     adresse: { type: String },
-    statut: { type: String }, //disponible ou pas
+    statut: { type: String, default: "in progress" },
     datepost: { type: Date, default: Date.now },
     candidatures: [
       {
@@ -21,7 +21,7 @@ const jobSchema = new mongoose.Schema(
           required: true,
         },
         postedAt: {
-          type: date,
+          type: Date,
           default: Date.now,
         },
       },

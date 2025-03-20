@@ -1,7 +1,7 @@
 import React from "react";
-import JobList from "../components/jobList";
+import MyjobsCompany from "../components/myjobsCompany";
 
-const Offres = () => {
+const Myjobs = () => {
   return (
     <>
       <div className="bradcam_area bradcam_bg_1">
@@ -9,16 +9,15 @@ const Offres = () => {
           <div className="row">
             <div className="col-xl-12">
               <div className="bradcam_text">
-                <h3>Offres à la une</h3>
+                <h3>My jobs</h3>
               </div>
             </div>
           </div>
         </div>
       </div>
-
-      <JobList />
+      <MyjobsCompany />
     </>
   );
 };
 
-export default Offres;
+export default Myjobs;

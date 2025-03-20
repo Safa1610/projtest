@@ -6,23 +6,26 @@ import Row from "react-bootstrap/Row";
 import Col from "react-bootstrap/Col";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
+import { jwtDecode } from "jwt-decode";
 
-function LoginForm() {
-  const [email, setEmail] = useState("");
-  const [motpasse, setMotpasse] = useState("");
-
+const AddJob = () => {
+  const [titre, setTitre] = useState("");
+  const [description, setDescription] = useState("");
+  const [adresse, setAdresse] = useState("");
   const navigate = useNavigate();
+  const token = localStorage.getItem("token");
+  const societe = jwtDecode(token).id;
   const handleSubmit = (e) => {
     e.preventDefault();
     axios
-      .post("http://localhost:3000/api/users/login", {
-        email,
-        password: motpasse,
+      .post("http://localhost:3000/api/jobs/add", {
+        titre,
+        description,
+        adresse,
+        societe,
       })
       .then((res) => {
-        localStorage.setItem("token", res.data);
-        localStorage.setItem("role", "user");
-        window.location.href = "/";
+        console.log("added");
       })
       .catch((err) => alert(err.message));
   };
@@ -32,28 +35,37 @@ function LoginForm() {
         <Row className="justify-content-md-center">
           <Col xs={5} className="lightgrey p-4 my-3">
             <Form onSubmit={handleSubmit}>
-              <h3>Se connecter</h3>
+              <h3>Add job</h3>
               <Form.Floating className="mb-3">
                 <Form.Control
                   id="floatingInputCustom"
-                  type="email"
+                  type="text"
                   placeholder="name@example.com"
-                  value={email}
-                  onChange={(e) => setEmail(e.target.value)}
+                  value={titre}
+                  onChange={(e) => setTitre(e.target.value)}
                 />
-                <label htmlFor="floatingInputCustom">Email</label>
+                <label htmlFor="floatingInputCustom">Titre</label>
               </Form.Floating>
               <Form.Floating className="mb-3">
                 <Form.Control
                   id="floatingPasswordCustom"
-                  type="password"
+                  type="text"
                   placeholder="Password"
-                  value={motpasse}
-                  onChange={(e) => setMotpasse(e.target.value)}
+                  value={description}
+                  onChange={(e) => setDescription(e.target.value)}
                 />
-                <label htmlFor="floatingPasswordCustom">Mot de passe</label>
+                <label htmlFor="floatingPasswordCustom">Description</label>
               </Form.Floating>
-
+              <Form.Floating className="mb-3">
+                <Form.Control
+                  id="floatingPasswordCustom"
+                  type="text"
+                  placeholder="adresse"
+                  value={adresse}
+                  onChange={(e) => setAdresse(e.target.value)}
+                />
+                <label htmlFor="floatingPasswordCustom">Adresse</label>
+              </Form.Floating>
               <Button variant="primary" type="submit">
                 Se connecter
               </Button>
@@ -69,6 +81,6 @@ function LoginForm() {
       </div>
     </>
   );
-}
+};
 
-export default LoginForm;
+export default AddJob;

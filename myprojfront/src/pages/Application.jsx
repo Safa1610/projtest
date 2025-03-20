@@ -1,24 +1,23 @@
 import React from "react";
-import JobList from "../components/jobList";
+import MyApplication from "../components/MyApplication";
 
-const Offres = () => {
+const Application = () => {
   return (
-    <>
+    <div>
       <div className="bradcam_area bradcam_bg_1">
         <div className="container">
           <div className="row">
             <div className="col-xl-12">
               <div className="bradcam_text">
-                <h3>Offres à la une</h3>
+                <h3>My jobs</h3>
               </div>
             </div>
           </div>
         </div>
       </div>
-
-      <JobList />
-    </>
+      <MyApplication />
+    </div>
   );
 };
 
-export default Offres;
+export default Application;

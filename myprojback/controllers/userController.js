@@ -40,9 +40,9 @@ async function deleteUser(req, res) {
 // localhost:3000/api/users/:id (put)
 async function updateUser(req, res) {
   const { id } = req.params;
-  const { firstname, lastname, birthday, age, isActive } = req.body;
+  const { liencv } = req.body;
   await user.findByIdAndUpdate(id, {
-    $set: { firstname, lastname, birthday, age, isActive },
+    $set: { liencv },
   });
   return res.status(200).json({ message: "user updated" });
 }
@@ -55,7 +55,7 @@ const registerUser = async (req, res) => {
     const { prenom, nom, email, password, DateNaiss, tel, liencv, Etat } =
       req.body;
     const existantUser = await user.findOne({
-      $or: [{ username: username, email: email }],
+      $or: [{ email: email }],
     });
     if (existantUser)
       return res
@@ -84,14 +84,14 @@ const registerUser = async (req, res) => {
 const login = async (req, res) => {
   try {
     const { email, password } = req.body;
-    const existant = await user.findOne({ email: email.tolowercase() });
+    const existant = await user.findOne({ email: email.toLowerCase() });
     if (!existant)
       return res.status(404).json({ message: "utilisateur non trouvé" });
     const comparedPassword = await bcrypt.compare(password, existant.password);
     if (!comparedPassword)
       return res.status(400).json({ message: "invalid credentials" });
 
-    const token = jwt.sign({ id: existant._id }, "PRIVATE_KEY", {
+    const token = jwt.sign({ id: existant._id, role: "user" }, "PRIVATE_KEY", {
       expiresIn: "7d",
     });
     return res.status(200).json(token);

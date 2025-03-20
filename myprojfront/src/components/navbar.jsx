@@ -1,21 +1,21 @@
+import { useEffect, useState } from "react";
 import Button from "react-bootstrap/Button";
 import Container from "react-bootstrap/Container";
 import Form from "react-bootstrap/Form";
 import Nav from "react-bootstrap/Nav";
 import Navbar from "react-bootstrap/Navbar";
-import NavDropdown from "react-bootstrap/NavDropdown";
-import Logo from "../assets/TalentTrekLogo1.png";
-
-//import { SearchHeartFill } from "react-bootstrap-icons";
-//import { SearchHeart } from "react-bootstrap-icons";
 
 function NavbarTop() {
-  const token = sessionStorage.getItem("token");
+  const [token, setToken] = useState("");
+  const [role, setRole] = useState("");
+  useEffect(() => {
+    setToken(localStorage.getItem("token"));
+    setRole(localStorage.getItem("role"));
+  }, [token, role]);
   return (
     <Navbar expand="lg" className="navbartop">
       <Container fluid>
-        {/* <img src={Logo} alt="Logo" width="40" height="40" /> */}
-        <Navbar.Brand href="#">TalentTrek</Navbar.Brand>
+        <Navbar.Brand href="/">TalentTrek</Navbar.Brand>
         <Navbar.Toggle aria-controls="navbarScroll" />
         <Navbar.Collapse id="navbarScroll">
           <Nav
@@ -24,11 +24,45 @@ function NavbarTop() {
             navbarScroll
           >
             <Nav.Link href="/">Acceuil</Nav.Link>
-            <Nav.Link href="/offres">Offre d'emploi</Nav.Link>
-            <Nav.Link href="/contact">Contact</Nav.Link>
+
+            {role === "user" && (
+              <>
+                <Nav.Link href="/contact">Contact</Nav.Link>{" "}
+                <Nav.Link href="/offres">Offre d'emploi</Nav.Link>
+                <Nav.Link href="/applications">My applications</Nav.Link>
+                <Nav.Link href="/changeCV">Change CV</Nav.Link>
+              </>
+            )}
+            {role === "company" && (
+              <>
+                <Nav.Link href="/add_job">Add job</Nav.Link>
+                <Nav.Link href="/myjobs">My jobs</Nav.Link>
+              </>
+            )}
           </Nav>
           {token ? (
-            <p>Hello user</p>
+            <>
+              <Form className="d-flex" style={{ alignItems: "center" }}>
+                <p style={{ margin: "0 10px" }}>Hello {role}</p>
+                <Button
+                  style={{
+                    backgroundColor: "#00D363",
+                    borderColor: "#32CD32",
+                    color: "#ffffff",
+                  }}
+                >
+                  <a
+                    style={{ textDecoration: "none", color: "#ffffff" }}
+                    onClick={() => {
+                      localStorage.clear();
+                      window.location.href = "/login";
+                    }}
+                  >
+                    Logout
+                  </a>
+                </Button>
+              </Form>
+            </>
           ) : (
             <>
               <a

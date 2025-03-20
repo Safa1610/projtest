@@ -16,7 +16,6 @@ async function createCompany(req, res) {
       taille,
       adresse,
       ville,
-      creele,
     } = req.body;
 
     const existantCompany = await company.findOne({ email: email });
@@ -89,7 +88,7 @@ async function login(req, res) {
       return res.status(400).json({ message: `invalid crendentials` });
 
     const token = jwt.sign(
-      { id: existantCompany._id },
+      { id: existantCompany._id, role: "company" },
       process.env.JWT_PRIVATEKEY,
       { expiresIn: "7d" }
     );

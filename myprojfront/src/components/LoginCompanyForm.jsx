@@ -7,7 +7,7 @@ import Col from "react-bootstrap/Col";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
 
-function LoginForm() {
+function LoginCompanyForm() {
   const [email, setEmail] = useState("");
   const [motpasse, setMotpasse] = useState("");
 
@@ -15,13 +15,13 @@ function LoginForm() {
   const handleSubmit = (e) => {
     e.preventDefault();
     axios
-      .post("http://localhost:3000/api/users/login", {
+      .post("http://localhost:3000/api/companies/login", {
         email,
         password: motpasse,
       })
       .then((res) => {
-        localStorage.setItem("token", res.data);
-        localStorage.setItem("role", "user");
+        localStorage.setItem("token", res.data.token);
+        localStorage.setItem("role", "company");
         window.location.href = "/";
       })
       .catch((err) => alert(err.message));
@@ -71,4 +71,4 @@ function LoginForm() {
   );
 }
 
-export default LoginForm;
+export default LoginCompanyForm;

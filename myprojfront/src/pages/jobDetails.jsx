@@ -1,9 +1,19 @@
+import axios from "axios";
+import { useEffect, useState } from "react";
 import { useParams, Link } from "react-router-dom";
 
-const JobDetails = ({ jobs }) => {
+const JobDetails = () => {
+  const [job, setjob] = useState({});
+  const role = localStorage.getItem("role");
   const { id } = useParams();
-  const job = jobs.find((m) => m.id.toString() === id);
-  const token = sessionStorage.getItem("token");
+
+  useEffect(() => {
+    axios
+      .get("http://localhost:3000/api/jobs/" + id)
+      .then((res) => setjob(res.data.thejob));
+  }, [id]);
+  console.log(job);
+  const token = localStorage.getItem("token");
   if (!job) {
     return (
       <div className="container py-5 text-center">
@@ -30,28 +40,20 @@ const JobDetails = ({ jobs }) => {
             ⬅ Retour aux offres
           </Link>
           <div className="card p-4">
-            <h2 className="fw-bold">
-              {job.titre} {job.id}
-            </h2>
+            <h2 className="fw-bold">{job.titre}</h2>
             <p>
-              <strong>Société:</strong> ExampleCorp
+              <strong>Société:</strong> {job?.societe?.nom}
             </p>
             <p>
-              <strong>Adresse:</strong> Remote
+              <strong>Adresse:</strong> {job.adresse}
             </p>
             <p>
-              <strong>Description:</strong> This is a great job opportunity for
-              talented developers.
+              <strong>Description:</strong> {job.description}
             </p>
-            <p>
-              <strong>Requirements:</strong>
-            </p>
-            <ul>
-              <li>Experience with React and Bootstrap</li>
-              <li>Strong problem-solving skills</li>
-              <li>Team collaboration</li>
-            </ul>
-            {token ? (
+
+            {role === "company" ? (
+              <></>
+            ) : token ? (
               <Link className="btn btn-primary mt-3">Postuler</Link>
             ) : (
               <Link className="btn btn-primary mt-3" to="/login">
